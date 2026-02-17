@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE COLLECTIVE | El Estándar del Silencio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #030303;
+            --dark-grey: #0a0a0a;
+            --accent: #ffffff;
+            --soft-grey: #666666;
+        }
+
+        body {
+            background-color: var(--black);
+            color: #d1d1d1;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .section-fade {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .section-fade.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Estética Lab */
+        .drop-zone {
+            border: 1px solid rgba(255,255,255,0.03);
+            background: #050505;
+            transition: all 0.6s ease;
+        }
+
+        .drop-zone.dragover {
+            border-color: rgba(255,255,255,0.3);
+            background: #080808;
+        }
+
+        .scanner-bar {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 20px white;
+            top: 0;
+            display: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .scanning .scanner-bar {
+            display: block;
+            animation: scan 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        #mobile-menu {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .editorial-italic {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+        }
+
+        ::-webkit-scrollbar { width: 2px; }
+        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-thumb { background: #222; }
+
+        .btn-minimal {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.5s ease;
+        }
+
+        .btn-minimal:hover {
+            border-color: white;
+            background: white;
+            color: black;
+        }
+
+        .bg-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.02;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <div class="fixed inset-0 bg-noise z-[200]"></div>
+
+    <!-- NAVEGACIÓN -->
+    <nav class="fixed top-0 w-full z-[100] p-6 md:p-10 flex justify-between items-center mix-blend-difference">
+        <div class="text-[10px] uppercase tracking-[0.8em] font-light cursor-pointer" onclick="navigateTo('home')">
+            THE COLLECTIVE
+        </div>
+        
+        <div class="hidden md:flex gap-12 text-[9px] uppercase tracking-[0.4em] items-center">
+            <button onclick="navigateTo('home')" class="opacity-40 hover:opacity-100 transition">Concepto</button>
+            <button onclick="navigateTo('catalog')" class="opacity-40 hover:opacity-100 transition">Archivo</button>
+            <button onclick="navigateTo('studio')" class="opacity-40 hover:opacity-100 transition italic editorial-italic">Estudio Genético</button>
+        </div>
+
+        <button class="md:hidden text-[9px] uppercase tracking-widest opacity-60" onclick="toggleMenu()">Menú</button>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black z-[110] translate-x-full flex flex-col items-center justify-center gap-12">
+        <button class="absolute top-10 right-10 text-[9px] uppercase tracking-widest opacity-40" onclick="toggleMenu()">Volver</button>
+        <button onclick="navigateTo('home'); toggleMenu()" class="text-3xl font-extralight tracking-tighter">CONCEPTO</button>
+        <button onclick="navigateTo('catalog'); toggleMenu()" class="text-3xl font-extralight tracking-tighter">ARCHIVO</button>
+        <button onclick="navigateTo('studio'); toggleMenu()" class="text-3xl font-extralight tracking-tighter italic editorial-italic">ESTUDIO</button>
+    </div>
+
+    <!-- HOME -->
+    <main id="home" class="section-fade active">
+        <section class="h-screen flex flex-col items-center justify-center px-6 text-center">
+            <span class="text-[9px] uppercase tracking-[0.6em] opacity-30 mb-6 reveal">El Estándar del Silencio</span>
+            <h1 class="text-[10vw] md:text-[7vw] font-thin leading-none tracking-tighter mb-8 reveal uppercase">No necesitas <br> ser visto.</h1>
+            <p class="text-sm md:text-base opacity-40 reveal mb-12 max-w-lg leading-relaxed" style="transition-delay: 0.2s;">
+                La prenda definitiva es aquella que desaparece para dejar que tu presencia hable.
+            </p>
+            
+            <button onclick="navigateTo('catalog')" class="reveal btn-minimal px-12 py-5 text-[9px] uppercase tracking-[0.6em] transition-all" style="transition-delay: 0.4s;">
+                Ver el Archivo
+            </button>
+        </section>
+
+        <section class="py-60 px-6 bg-[#030303]">
+            <div class="max-w-5xl mx-auto reveal">
+                <div class="grid md:grid-cols-2 gap-24 items-start">
+                    <div>
+                        <span class="text-[8px] uppercase tracking-[0.5em] opacity-20 block mb-10">— La Psicología del Control</span>
+                        <h2 class="text-4xl md:text-6xl font-extralight leading-none tracking-tighter mb-12">
+                            MENOS ES <br><span class="editorial-italic opacity-40">PODER.</span>
+                        </h2>
+                    </div>
+                    <div class="space-y-12 text-sm text-zinc-500 font-light leading-relaxed pt-4">
+                        <p class="text-zinc-200">
+                            La verdadera superioridad no requiere validación externa. Operamos bajo la premisa de la invisibilidad táctica: prendas que eliminan el ruido visual para proyectar una autoridad calmada.
+                        </p>
+                        <p>
+                            No vendemos moda; entregamos herramientas de anonimato para quienes ya poseen el control. Cada costura es una decisión geométrica, cada color es una ausencia de distracción.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- CATÁLOGO -->
+    <main id="catalog" class="section-fade pt-40 pb-20 px-6 md:px-20">
+        <header class="mb-32 flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div class="max-w-xl">
+                <span class="text-[9px] uppercase tracking-[0.4em] opacity-20 block mb-6">— Inventario 01</span>
+                <h2 class="text-6xl md:text-8xl font-thin tracking-tighter uppercase">Archivo</h2>
+            </div>
+            <p class="text-[10px] uppercase tracking-[0.3em] opacity-40 max-w-[200px] leading-loose">Piezas numeradas. Producción limitada por la ética de la escasez.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+            <div class="group cursor-pointer">
+                <div class="aspect-[4/5] bg-[#080808] mb-8 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1550614000-4895a10e1bfd?q=80&w=800" class="w-full h-full object-cover grayscale opacity-30 group-hover:opacity-70 group-hover:scale-110 transition-all duration-1000">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-[10px] uppercase tracking-[0.4em] mb-2">Null Shirt</h3>
+                        <p class="text-[8px] opacity-30 uppercase tracking-widest">Negro Absoluto / 300g</p>
+                    </div>
+                    <span class="text-[10px] font-light opacity-40">$120</span>
+                </div>
+            </div>
+
+            <div class="group cursor-pointer">
+                <div class="aspect-[4/5] bg-[#080808] mb-8 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1594932224011-045041ec32fd?q=80&w=800" class="w-full h-full object-cover grayscale opacity-30 group-hover:opacity-70 group-hover:scale-110 transition-all duration-1000">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-[10px] uppercase tracking-[0.4em] mb-2">Monolith Layer</h3>
+                        <p class="text-[8px] opacity-30 uppercase tracking-widest">Gris Humo / Lana Fría</p>
+                    </div>
+                    <span class="text-[10px] font-light opacity-40">$185</span>
+                </div>
+            </div>
+
+            <div class="group cursor-pointer">
+                <div class="aspect-[4/5] bg-[#080808] mb-8 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=800" class="w-full h-full object-cover grayscale opacity-30 group-hover:opacity-70 group-hover:scale-110 transition-all duration-1000">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-[10px] uppercase tracking-[0.4em] mb-2">Void Concept</h3>
+                        <p class="text-[8px] opacity-30 uppercase tracking-widest">Blanco Hueso / Estructural</p>
+                    </div>
+                    <span class="text-[10px] font-light opacity-40">$110</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ESTUDIO IA -->
+    <main id="studio" class="section-fade pt-40 pb-20 px-6">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-24 items-center">
+            
+            <div class="order-2 lg:order-1">
+                <span class="text-[9px] uppercase tracking-[0.6em] text-zinc-600 mb-6 block">Diseño Generativo</span>
+                <h2 class="text-6xl md:text-8xl font-thin tracking-tighter leading-none mb-10">ESTUDIO <br><span class="editorial-italic opacity-30 text-5xl md:text-7xl">NULL-01</span></h2>
+                <p class="text-[11px] text-zinc-500 leading-relaxed mb-16 max-w-sm tracking-widest uppercase">Transforma una idea visual en una prenda del Archivo. La IA purifica el ruido y extrae la esencia geométrica.</p>
+                
+                <div class="space-y-8">
+                    <div id="drop-zone" class="drop-zone h-80 relative flex flex-col items-center justify-center cursor-pointer group overflow-hidden">
+                        <div class="scanner-bar"></div>
+                        <input type="file" id="file-input" class="hidden" accept="image/*">
+                        
+                        <div id="upload-ui" class="text-center">
+                            <div class="w-12 h-12 border border-zinc-900 mx-auto flex items-center justify-center mb-6 group-hover:border-zinc-500 transition-colors">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 4v12M8 8l4-4 4 4M4 17v2h16v-2"/></svg>
+                            </div>
+                            <p class="text-[8px] uppercase tracking-[0.5em] text-zinc-600">Insertar Referencia</p>
+                        </div>
+                        <img id="preview-img" class="hidden absolute inset-0 w-full h-full object-cover opacity-20">
+                    </div>
+
+                    <button id="gen-btn" class="w-full btn-minimal py-6 text-[10px] uppercase tracking-[0.5em] disabled:opacity-20">
+                        Generar Geometría
+                    </button>
+                    
+                    <div id="ai-status" class="opacity-0 transition-opacity text-center">
+                        <span id="status-txt" class="text-[8px] uppercase tracking-[0.4em] text-zinc-500">Purificando formas...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-1 lg:order-2">
+                <div class="aspect-[3/4] bg-[#050505] relative flex items-center justify-center overflow-hidden border border-white/5">
+                    <div id="result-overlay" class="absolute inset-0 flex items-center justify-center p-16">
+                        <div id="gen-canvas" class="w-full aspect-square border border-white/5 flex items-center justify-center relative transition-all duration-1000 bg-black">
+                             <div id="placeholder-txt" class="text-[9px] uppercase tracking-[1.5em] opacity-10 font-thin">Visual</div>
+                             <img id="final-ai-img" class="hidden absolute max-w-[80%] grayscale brightness-110 contrast-125 opacity-0 transition-opacity duration-1000">
+                        </div>
+                    </div>
+
+                    <div id="loader-ia" class="hidden absolute inset-0 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center gap-6">
+                        <div class="w-10 h-10 border border-white/5 border-t-white animate-spin"></div>
+                        <p class="text-[9px] uppercase tracking-[0.6em] opacity-40">Extrayendo Esencia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-32 px-10 border-t border-white/5 bg-black">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start gap-20">
+            <div class="text-[10px] uppercase tracking-[0.8em] opacity-20">THE COLLECTIVE</div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-20">
+                <div class="flex flex-col gap-4 text-[8px] uppercase tracking-widest opacity-40">
+                    <span class="opacity-100 mb-2">Privacidad</span>
+                    <a href="#" class="hover:text-white transition">Protocolo</a>
+                    <a href="#" class="hover:text-white transition">Anonimato</a>
+                </div>
+                <div class="flex flex-col gap-4 text-[8px] uppercase tracking-widest opacity-40">
+                    <span class="opacity-100 mb-2">Archivo</span>
+                    <a href="#" class="hover:text-white transition">Pedidos</a>
+                    <a href="#" class="hover:text-white transition">Envíos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        window.navigateTo = function(sectionId) {
+            document.querySelectorAll('.section-fade').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo(0, 0);
+            initReveals();
+        }
+
+        window.toggleMenu = function() {
+            const menu = document.getElementById('mobile-menu');
+            const isHidden = menu.style.transform === 'translateX(0%)';
+            menu.style.transform = isHidden ? 'translateX(100%)' : 'translateX(0%)';
+        }
+
+        function initReveals() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            reveals.forEach(r => observer.observe(r));
+        }
+        initReveals();
+
+        // IA Logic
+        const apiKey = ""; 
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const previewImg = document.getElementById('preview-img');
+        const genBtn = document.getElementById('gen-btn');
+        const loaderIa = document.getElementById('loader-ia');
+        const finalAiImg = document.getElementById('final-ai-img');
+        const statusTxt = document.getElementById('status-txt');
+        const aiStatus = document.getElementById('ai-status');
+
+        let base64Data = "";
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = res => {
+                base64Data = res.target.result.split(',')[1];
+                previewImg.src = res.target.result;
+                previewImg.classList.remove('hidden');
+                document.getElementById('upload-ui').classList.add('opacity-0');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        async function generateIA(base64) {
+            const payload = {
+                contents: [{
+                    parts: [
+                        { text: "Generate a minimalist brutalist graphic design for a luxury streetwear brand. Style: Geometric abstraction, high contrast, monochromatic black and white, subtle grain. Focus on architectural shapes and symmetry." },
+                        { inlineData: { mimeType: "image/png", data: base64 } }
+                    ]
+                }],
+                generationConfig: { responseModalities: ["IMAGE"] }
+            };
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            return result.candidates[0].content.parts.find(p => p.inlineData).inlineData.data;
+        }
+
+        genBtn.addEventListener('click', async () => {
+            if (!base64Data) return;
+            genBtn.disabled = true;
+            loaderIa.classList.remove('hidden');
+            dropZone.classList.add('scanning');
+            aiStatus.classList.remove('opacity-0');
+            
+            const messages = ["Analizando geometría...", "Eliminando ruido...", "Extrayendo contraste...", "Finalizando..."];
+            let idx = 0;
+            const interval = setInterval(() => { statusTxt.textContent = messages[idx]; idx = (idx + 1) % messages.length; }, 800);
+
+            try {
+                const img = await generateIA(base64Data);
+                finalAiImg.src = `data:image/png;base64,${img}`;
+                setTimeout(() => {
+                    clearInterval(interval);
+                    loaderIa.classList.add('hidden');
+                    dropZone.classList.remove('scanning');
+                    finalAiImg.classList.remove('hidden');
+                    setTimeout(() => finalAiImg.style.opacity = "1", 50);
+                    statusTxt.textContent = "Forma Purificada.";
+                    genBtn.textContent = "Guardar en Archivo";
+                    genBtn.disabled = false;
+                }, 1500);
+            } catch (e) {
+                statusTxt.textContent = "Error de Sistema.";
+                genBtn.disabled = false;
+                loaderIa.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
